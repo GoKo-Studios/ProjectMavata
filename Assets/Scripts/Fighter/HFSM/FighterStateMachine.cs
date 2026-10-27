@@ -507,7 +507,7 @@ public abstract class FighterStateMachine : MonoBehaviour, IStateMachineRunner
 
         _mesh.localRotation = Quaternion.Euler(0f, 5f, 0f);
         
-        // Chaning scale at runtime creates problems with MagicaCloth
+        // Changing scale at runtime caused problems with cloth simulation (MagicaCloth, now removed)
         //_mesh.localScale = new Vector3(_faceDirection, 1f, 1f);
     }
 
@@ -553,4 +553,4 @@ public abstract class FighterStateMachine : MonoBehaviour, IStateMachineRunner
 
     #endregion
 
-}
+}
