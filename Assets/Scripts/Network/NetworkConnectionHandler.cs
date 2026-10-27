@@ -52,6 +52,11 @@ public class NetworkConnectionHandler : MonoBehaviour
         NetworkManager.Singleton.StartServer();
         hostIpText.text = NetworkUtils.GetLocalIPAddress();
         hostPortText.text = NetworkUtils.GetPort().ToString();
+        FindObjectOfType<ServerManager>().SetupServer();
+    }
+
+    public void Shutdown(){
+        NetworkManager.Singleton.Shutdown();
     }
 
 }

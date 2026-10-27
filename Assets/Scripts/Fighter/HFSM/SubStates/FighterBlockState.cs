@@ -18,47 +18,25 @@ public class FighterBlockState : FighterBaseState
 
     public override bool CheckSwitchState()
     {
-        if (_currentFrame >= _stun){
+        if (!_ctx.BlockInput.Read()){
             if(IdleStateSwitchCheck()) return true; 
             
             SwitchState(_factory.GetSubState(FighterSubStates.Idle));
             return true;
-            
         }
-        else{
-            return false;
+
+        if(_ctx.StaminaManager.Block <= 0){
+            _ctx.CurrentState.SwitchState(_factory.GetRootState(FighterRootStates.Stunned));
         }
+
+        return false;
     }
 
     public override void EnterState()
     {
         _currentFrame = 0;
-        _collisionData = _ctx.HurtCollisionData;
-        _action = _collisionData.action;
-        _ctx.IsHurt = false;
 
-        _stun = _action.Block.Stun.stun;
-        _distance = _action.Block.Slide.distance;
-
-        _ctx.HealthManager.UpdateHealth(_action.Block.chipDamage);
-        
         ActionDefault action = _ctx.ActionDictionary["Block"] as ActionDefault;
-
-        float direction = -Mathf.Sign(_collisionData.hurtbox.Transform.right.x);
-        float time = _stun * Time.fixedDeltaTime;
-        _drag = _distance / (time * time) * direction;
-
-        _velocity.x = _distance / time; // Initial horizontal velocity;
-        _velocity.x *= direction;
-        
-       // Apply Calculated Variables
-        _ctx.Drag = _drag;
-        // _ctx.Gravity = 0f;
-        _ctx.CurrentMovement = _velocity;
-
-        _ctx.StaminaManager.UpdateBlock(-1);
-
-        if (_stun == 0) return;
 
         AnimationClip clip = action.meshAnimation;
         AnimationClip colClip = action.boxAnimation;
@@ -66,9 +44,9 @@ public class FighterBlockState : FighterBaseState
         _ctx.AnimOverrideCont["Action"] = clip;
         _ctx.ColBoxOverrideCont["Box_Action"] = colClip;
 
-        float speedVar = AdjustAnimationTime(clip, _stun);
-        _ctx.Animator.SetFloat("SpeedVar", speedVar);
-        _ctx.ColBoxAnimator.SetFloat("SpeedVar", speedVar);
+        // float speedVar = AdjustAnimationTime(clip, _stun);
+        _ctx.Animator.SetFloat("SpeedVar", 1f);
+        _ctx.ColBoxAnimator.SetFloat("SpeedVar", 1f);
 
         _ctx.Animator.PlayInFixedTime("Action");
         _ctx.ColBoxAnimator.PlayInFixedTime("Action");
@@ -82,7 +60,33 @@ public class FighterBlockState : FighterBaseState
     }
 
     public override void FixedUpdateState()
-    {   
+    {
+        if(_ctx.IsHurt){
+            Debug.Log("Applying block hurt");
+            _collisionData = _ctx.HurtCollisionData;
+            _action = _collisionData.action;
+
+            _stun = _action.Block.Stun.stun;
+            _distance = _action.Block.Slide.distance;
+
+            _ctx.HealthManager.UpdateHealth(_action.Block.chipDamage);    
+
+            float direction = -Mathf.Sign(_collisionData.hurtbox.Transform.right.x);
+            float time = _stun * Time.fixedDeltaTime;
+            _drag = _distance / (time * time) * direction;
+
+            _velocity.x = _distance / time; // Initial horizontal velocity;
+            _velocity.x *= direction;
+            
+            // Apply Calculated Variables
+            _ctx.Drag = _drag;
+            // _ctx.Gravity = 0f;
+            _ctx.CurrentMovement = _velocity;
+
+            _ctx.StaminaManager.UpdateBlock(-1);
+        }
+        //_ctx.IsHurt = false;
+
         CheckSwitchState();
         _currentFrame++;
     }

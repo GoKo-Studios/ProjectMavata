@@ -66,9 +66,8 @@ public abstract class StateMachineBaseState
         // ExitState();
     }
 
-    protected void SwitchState(StateMachineBaseState newState){
+    public void SwitchState(StateMachineBaseState newState){
         ExitStates();
-
         newState.EnterState();
         if (_preserveSubstates){
             newState._currentSubState = _currentSubState;
@@ -86,6 +85,8 @@ public abstract class StateMachineBaseState
         else if(_currentSuperState != null){
             _currentSuperState.SetSubState(newState);
         }
+
+        _preserveSubstates = false;
 
         //_currentSubState = null;
     }

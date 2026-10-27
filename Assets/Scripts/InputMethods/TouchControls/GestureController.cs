@@ -20,7 +20,9 @@ public class GestureController : MonoBehaviour, IInputInvoker
 
     #endregion
 
-    protected InputEvents _inputEvents;
+    public InputEvents _inputEvents; // make it protected after TEKMER
+
+    [SerializeField] private InputType _inputType;
 
     [Header("Swipe Settings")]
     [SerializeField] private float _minSwipeDistance; // Minimum distance required to register as a swipe. // Can also use Screen.width and Screen.height.
@@ -223,6 +225,12 @@ public class GestureController : MonoBehaviour, IInputInvoker
         return InputGestures.None;
     }
 
+    public void SetActiveAndEnabled(bool state){
+        if(state){
+            this.enabled = state;
+        }
+    }
+
     public InputEvents GetInputEvents()
     {
         return _inputEvents;
@@ -231,6 +239,10 @@ public class GestureController : MonoBehaviour, IInputInvoker
     public void SetInputEvents(InputEvents inputEvents)
     {
         _inputEvents = inputEvents;
+    }
+
+    public InputType GetInputType(){
+        return _inputType;
     }
 
     public bool IsActiveAndEnabled()

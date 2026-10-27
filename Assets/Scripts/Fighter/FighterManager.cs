@@ -78,9 +78,14 @@ public class FighterManager : MonoBehaviour
 
     }
 
-    void EmbedFighter()
-    {
-        
+    public void SubscribeInput(InputEvents inputEvents){
+        inputEvents.OnDrag += OnDrag;
+        inputEvents.OnHold += OnHold;
+        inputEvents.OnSwipe += OnSwipe;
+        inputEvents.OnTap += OnTap;
+        inputEvents.OnDirectInputGesture += OnDirectInput;
+        inputEvents.DirectAttackInputByAction += OnDirectAttackInputByAction;
+        inputEvents.DirectAttackInputByString += OnDirectAttackInputByString;
     }
 
     #region input listener functions
@@ -94,8 +99,9 @@ public class FighterManager : MonoBehaviour
 
     public void OnHold(ScreenSide side)
     {
-        Debug.Log("Hold side: " + side); 
-        if(side == ScreenSide.LeftNRight) fighterEvents.OnBlock?.Invoke();
+        if(side == ScreenSide.LeftNRight) {
+            fighterEvents.OnBlock?.Invoke();
+        }
     }
 
     public void OnDrag(ScreenSide side, GestureDirections direction)
