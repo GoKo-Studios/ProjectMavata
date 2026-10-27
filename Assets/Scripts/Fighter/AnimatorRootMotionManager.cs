@@ -14,7 +14,7 @@ public class AnimatorRootMotionManager : MonoBehaviour
 
     private void Start(){
         m_animator.applyRootMotion = m_applyRootMotion;
-        m_animator.updateMode = AnimatorUpdateMode.AnimatePhysics;
+        m_animator.updateMode = AnimatorUpdateMode.Fixed;
     }
 
     private void OnAnimatorMove(){

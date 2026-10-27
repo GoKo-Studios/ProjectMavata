@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -35,7 +36,7 @@ public class BlitRendererFeature : ScriptableRendererFeature
 
         private Material material = null;
         private RenderTargetIdentifier source;
-        private RenderTargetHandle tempText;
+        private RTHandle tempText;
         private PassSettings passSettings = null;
 
         public CustomRenderPass(PassSettings passSettings)
@@ -43,7 +44,6 @@ public class BlitRendererFeature : ScriptableRendererFeature
             this.material = passSettings.material;
             this.passSettings = passSettings;
             renderPassEvent = passSettings.renderPassEvent;
-            tempText.Init("_TempTexture");
         }
 
         public void SetSource(RenderTargetIdentifier source)
@@ -54,12 +54,13 @@ public class BlitRendererFeature : ScriptableRendererFeature
 
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
-            cmd.GetTemporaryRT(tempText.id, cameraTextureDescriptor, FilterMode.Point);
+            cmd.GetTemporaryRT(tempText.GetInstanceID(), cameraTextureDescriptor, FilterMode.Point);
         }
 
+        [Obsolete("Obsolete")]
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
-            SetSource(renderingData.cameraData.renderer.cameraColorTarget);
+            SetSource(renderingData.cameraData.renderer.cameraColorTargetHandle);
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
@@ -68,8 +69,8 @@ public class BlitRendererFeature : ScriptableRendererFeature
 
             using (new ProfilingScope(cmd, new ProfilingSampler(ProfilerTag)))
             {
-                Blit(cmd, source, tempText.id, material, 0); 
-                Blit(cmd, tempText.id, source);               
+                Blit(cmd, tempText, tempText, material, 0); 
+                // Blit(cmd, tempText.id, source);               
             }
 
             context.ExecuteCommandBuffer(cmd);
@@ -78,7 +79,7 @@ public class BlitRendererFeature : ScriptableRendererFeature
 
         public override void OnCameraCleanup(CommandBuffer cmd)
         {
-            cmd.ReleaseTemporaryRT(tempText.id);
+            cmd.ReleaseTemporaryRT(tempText.GetInstanceID());
         }
     }
 }

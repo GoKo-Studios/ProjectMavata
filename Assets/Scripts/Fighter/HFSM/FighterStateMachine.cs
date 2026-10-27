@@ -532,7 +532,7 @@ public abstract class FighterStateMachine : MonoBehaviour, IStateMachineRunner
 
         _currentMovement = Vector2.zero;
         _velocity = Vector2.zero;
-        _rigidbody2D.velocity = Vector2.zero;
+        _rigidbody2D.linearVelocity = Vector2.zero;
         
         // Reset Inputs
 

@@ -567,7 +567,7 @@ public class StrokeEditorWindow : EditorWindow
     private void DrawPoint(Vector3 point, string name, int index){
         Handles.Label(point, name, style);
         EditorGUI.BeginChangeCheck();
-        Vector2 position = Handles.FreeMoveHandle(point, Quaternion.identity, 0.1f, Vector3.one, Handles.SphereHandleCap);
+        var fmh_570_58_639287079082419704 = Quaternion.identity; Vector2 position = Handles.FreeMoveHandle(point, 0.1f, Vector3.one, Handles.SphereHandleCap);
         if (EditorGUI.EndChangeCheck()) {
             _pointList[index] = position;
         }

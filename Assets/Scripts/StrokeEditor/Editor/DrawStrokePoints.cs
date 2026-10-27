@@ -45,7 +45,7 @@ public class DrawStrokePoints : Editor
         Handles.Label(drawPos, name, style);
         EditorGUI.BeginChangeCheck();
         //Vector2 position = Handles.PositionHandle(drawPos, Quaternion.identity);
-        Vector2 position = Handles.FreeMoveHandle(drawPos, Quaternion.identity, 0.5f, Vector3.one, Handles.SphereHandleCap);
+        var fmh_48_60_639287079079323492 = Quaternion.identity; Vector2 position = Handles.FreeMoveHandle(drawPos, 0.5f, Vector3.one, Handles.SphereHandleCap);
         if (EditorGUI.EndChangeCheck()) {
             if (local) position = transform.InverseTransformPoint(position);
             property.vector2Value = position;
